@@ -1,19 +1,36 @@
 
 using UnityEngine;
+using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine.UI;
 
+[RequireComponent(typeof(TMP_Text))]
 public class FramesOutput : MonoBehaviour
 {
-    public Text fpsText;
-    public float deltaTime;
-
-    void Update()
+    private TMP_Text _fpsText;
+ 
+    private void Start()
     {
-        deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
-        float fps = 1.0f / deltaTime;
-        fpsText.text = Mathf.Ceil(fps).ToString();
+        _fpsText = GetComponent<TMP_Text>();
+        StartCoroutine(FramesPerSecond());
     }
+ 
+    private IEnumerator FramesPerSecond()
+    {
+        while (true)
+        {
+            int fps = (int) (1.0f / Time.deltaTime);
+            DisplayFPS(fps);
+ 
+            yield return new WaitForSeconds(1.0f);
+        }
+    }
+ 
+    private void DisplayFPS(float fps)
+    {
+        _fpsText.text = $"{fps} FPS";
+    }
+    
 }
