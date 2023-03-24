@@ -30,7 +30,7 @@ public class FramesOutput : MonoBehaviour
  
     private void DisplayFPS(float fps)
     {
-        _fpsText.text = $"{fps} FPS";
+        _fpsText.text = $"FPS : {fps} ";
     }
     
 }

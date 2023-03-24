@@ -5,8 +5,8 @@ using UnityEngine;
 public class ColourChange : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Color redColour = Color.red;
-    public Color blueColour = Color.blue;
+    public Color redColour = Color.white;
+    public Color blueColour = Color.white;
     public float duration = 5.0f;
 
     public Camera cam;
