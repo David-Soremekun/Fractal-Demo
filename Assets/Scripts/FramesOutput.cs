@@ -24,7 +24,7 @@ public class FramesOutput : MonoBehaviour
             int fps = (int) (1.0f / Time.deltaTime);
             DisplayFPS(fps);
  
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(1.2f);
         }
     }
  
