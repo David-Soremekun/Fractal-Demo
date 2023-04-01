@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fractal : RuntimeMesh
+public class Fractal : MonoBehaviour
 {
     
     //private Fractal child;
@@ -15,8 +15,9 @@ public class Fractal : RuntimeMesh
     FractalPart[][] parts;
 
     [SerializeField, Range(1, 8)] public int fractalDepth = 7;
-    Mesh mesh;
-    //Serialize(mesh);
+    
+    [SerializeField]
+    Mesh meshData;
     
     [SerializeField] 
     Material material;
@@ -30,7 +31,7 @@ public class Fractal : RuntimeMesh
         var go = new GameObject("Fractal Part" + index + " C " + childIndex);
         go.transform.localScale=scale* Vector3.one;
         go.transform.SetParent(transform,false);
-        go.AddComponent<MeshFilter>().mesh=Mesh;
+        go.AddComponent<MeshFilter>().mesh=meshData;
         go.AddComponent<MeshRenderer>().material = material;
         return new FractalPart {
             dir=directions[childIndex],
@@ -41,7 +42,7 @@ public class Fractal : RuntimeMesh
 
     void Awake(){
         parts= new FractalPart[fractalDepth][];
-        int length=1;
+        //int length=1;
         for(int i=0, length=1; i< parts.Length; i++,length*=5){
             parts[i]= new FractalPart[length];
             //length*=5;
@@ -51,7 +52,7 @@ public class Fractal : RuntimeMesh
         for (int li = 1; li < parts.Length; li++) {
             scale*=0.5f;
 			FractalPart[] levelParts = parts[li];
-			for (int fpi = 0; fpi < levelParts.Length; fpi++) {
+			for (int fpi = 0; fpi < levelParts.Length; fpi+=5) {
 				for (int ci = 0; ci < 5; ci++) {
 					levelParts[fpi + ci] = CreatePart(li, ci,scale);
 				}
@@ -74,10 +75,10 @@ public class Fractal : RuntimeMesh
     void Start()
     {   
         name = "Fractal " + fractalDepth;
-        if (fractalDepth<=1)
-        {
-            return;
-        }
+        //if (fractalDepth<=1)
+        //{
+        //    return;
+        //}
 
 
 
@@ -101,18 +102,18 @@ public class Fractal : RuntimeMesh
     void Update()
     {
         for(int li=1; li<parts.Length; li++){
-            FractalPart[] parentParts= parts[li-1];
+            FractalPart[] parentParts = parts[li - 1];
             FractalPart[] levelParts = parts[li];
 
-            for(int fpi=0; fpi<levelParts.length; fpi++){
+            for(int fpi=0; fpi<levelParts.Length; fpi++){
                 
                 Transform parentTransform = parentParts[fpi / 5].tran;
                 FractalPart part = levelParts[fpi];
                 // Responsible for rotating the Fractals
-                part.transform.localRotation=parentTransform.localRotation*parts.rot;
+                part.tran.localRotation=parentTransform.localRotation*part.rot;
                 
                 part.tran.localPosition =
-					parentTransform.localPosition + parentTransform.localRotation
+					parentTransform.localPosition + parentTransform.localRotation*
                     (1.5f * part.tran.localScale.x * part.dir);
             }
         }
