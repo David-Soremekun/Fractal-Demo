@@ -20,10 +20,10 @@ public class CameraManager : MonoBehaviour
         if (Input.GetKey(KeyCode.S)) inputDir.z = -1f;
         if (Input.GetKey(KeyCode.D)) inputDir.x = 1f;
 
-        if (Input.mousePosition.x < ScrollSize) inputDir.x = -1f;
-        if (Input.mousePosition.y < ScrollSize) inputDir.y = -1f;
-        if (Input.mousePosition.x > Screen.width - ScrollSize) inputDir.x = 1f;
-        if (Input.mousePosition.y > Screen.height - ScrollSize) inputDir.y = 1f;
+        //if (Input.mousePosition.x < ScrollSize) inputDir.x = -1f;
+        //if (Input.mousePosition.y < ScrollSize) inputDir.y = -1f;
+        //if (Input.mousePosition.x > Screen.width - ScrollSize) inputDir.x = 1f;
+        //if (Input.mousePosition.y > Screen.height - ScrollSize) inputDir.y = 1f;
 
 
         moveDir = transform.forward * inputDir.z + transform.right * inputDir.x;

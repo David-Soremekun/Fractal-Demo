@@ -12,8 +12,9 @@ public class Fractal : MonoBehaviour
         public Transform tran;
 
     }
+    public Quaternion deltaRotation;
     FractalPart[][] parts;
-
+    FractalPart rootPart;
     [SerializeField, Range(1, 8)] public int fractalDepth = 7;
     
     [SerializeField]
@@ -22,9 +23,9 @@ public class Fractal : MonoBehaviour
     [SerializeField] 
     Material material;
 
-    private static Vector3[] directions={Vector3.left, Vector3.right, Vector3.forward, Vector3.back, Vector3.up, Vector3.down};
+    private static Vector3[] directions={Vector3.up,Vector3.right,Vector3.left, Vector3.forward, Vector3.back,Vector3.down};
     private static Quaternion[] rotations={Quaternion.identity, Quaternion.Euler(0.0f,0.0f,-90.0f),Quaternion.Euler(0.0f, 0.0f, 90.0f),
-    Quaternion.Euler(90.0f,0.0f,0.0f),Quaternion.Euler(-90.0f,0.0f,0.0f),Quaternion.Euler(180.0f, 0.0f, 180.0f)};
+    Quaternion.Euler(90.0f,0.0f,0.0f),Quaternion.Euler(-90.0f,0.0f,0.0f), Quaternion.Euler(180.0f, 0.0f, 180.0f) };
     
     
     FractalPart CreatePart(int index,int childIndex, float scale){
@@ -41,19 +42,25 @@ public class Fractal : MonoBehaviour
     }
 
     void Awake(){
+        deltaRotation = Quaternion.Euler(0.0f, 22.5f * Time.deltaTime, 0.0f);
         parts= new FractalPart[fractalDepth][];
         //int length=1;
-        for(int i=0, length=1; i< parts.Length; i++,length*=5){
+        for(int i=0, length=1; i< parts.Length; i++,length*=6){
             parts[i]= new FractalPart[length];
             //length*=5;
         }
         float scale=1.0f;
         parts[0][0]=CreatePart(0,0,scale);
+        rootPart= parts[0][0];
+        rootPart.rot*=deltaRotation;
+        rootPart.tran.localRotation= rootPart.rot;
+        parts[0][0]= rootPart;
+
         for (int li = 1; li < parts.Length; li++) {
             scale*=0.5f;
 			FractalPart[] levelParts = parts[li];
-			for (int fpi = 0; fpi < levelParts.Length; fpi+=5) {
-				for (int ci = 0; ci < 5; ci++) {
+			for (int fpi = 0; fpi < levelParts.Length; fpi+=6) {
+				for (int ci = 0; ci < 6; ci++) {
 					levelParts[fpi + ci] = CreatePart(li, ci,scale);
 				}
 			}
@@ -101,20 +108,25 @@ public class Fractal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        deltaRotation = Quaternion.Euler(0.0f, 22.5f * Time.deltaTime, 0.0f);
         for(int li=1; li<parts.Length; li++){
             FractalPart[] parentParts = parts[li - 1];
             FractalPart[] levelParts = parts[li];
+            
+            
 
             for(int fpi=0; fpi<levelParts.Length; fpi++){
                 
-                Transform parentTransform = parentParts[fpi / 5].tran;
+                Transform parentTransform = parentParts[fpi / 6].tran;
                 FractalPart part = levelParts[fpi];
+                rootPart.rot *= deltaRotation;
                 // Responsible for rotating the Fractals
                 part.tran.localRotation=parentTransform.localRotation*part.rot;
                 
                 part.tran.localPosition =
 					parentTransform.localPosition + parentTransform.localRotation*
                     (1.5f * part.tran.localScale.x * part.dir);
+                levelParts[fpi]= part;
             }
         }
         transform.Rotate(0.0f, 22.5f * Time.deltaTime, 0.0f);
