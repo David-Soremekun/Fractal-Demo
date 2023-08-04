@@ -104,10 +104,6 @@ public class Fractal : MonoBehaviour
         e.transform.SetParent(transform, false);
         f.transform.SetParent(transform, false);*/
     }
-    float LerpFunction(float a, float b, float t){
-        Vector3.Lerp(a,b,t);
-        return a;
-    }
 
     // Update is called once per frame
     void Update()
@@ -135,6 +131,6 @@ public class Fractal : MonoBehaviour
                 
             }
         }
-        transform.Rotate(LerpFunction(0.0f, 5.0f, Time.deltaTime), 22.5f * Time.deltaTime, LerpFunction(0.0f,5.0f,Time.deltaTime));
+        transform.Rotate(0, 22.5f * Time.deltaTime, 0);
     }
 }
